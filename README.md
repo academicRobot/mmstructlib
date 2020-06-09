@@ -17,7 +17,7 @@ Each data structure is a list of child data structures.  Parent structures have 
         - Monomer (residues, or single monomer for small molecules)
           - Atom
           - MultiAtom (will function transparently as Atom, presenting first conformer)
-        - Atom
+            - Atom
 ## Installation
 ### Requirements
 - python3
