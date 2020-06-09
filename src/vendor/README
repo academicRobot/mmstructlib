@@ -1,0 +1,7 @@
+NSC and sginfo are required to compile these extensions, but cannot be distributed due to liscence restrictions on these programs.  They can be downloaded from the following urls if you agree to their respective liscences.
+
+NSC: http://mendel.imp.ac.at/studies/nsc2.tar.Z
+sginfo: http://cci.lbl.gov/sginfo/sginfo_1_01.tar.gz
+
+Place these in the vendor directory and unpack.
+

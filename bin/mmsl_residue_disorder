@@ -1,0 +1,145 @@
+#!/usr/bin/env python
+
+from mmstructlib.cli import ArgParse
+from mmstructlib.tools.rmsd import nmr_struct_pos_rmsd
+from mmstructlib.tools.seq import convert_seq_three_to_one_extended
+from mmstructlib.tools.summarize import from_atom
+from mmstructlib.IO import chimera
+
+import sys
+from operator import itemgetter
+
+def avg(lst):
+    return sum(lst)/len(lst)
+
+def writeMulti(outfh, struct, chains):
+    outfh.write("Columns:\tpdb_pos") 
+    if struct.is_xray():
+        outfh.write("\tmissing_density\toccupancy\tbfactor")
+    if struct.is_nmr() and len(struct) > 2:
+        outfh.write("\trmsd")
+    outfh.write("\t"+"\t".join(chains[0].prednames))
+    outfh.write("\n")
+    for chain in chains:
+        outfh.write(">{0}_{1}\n".format(struct.id, chain.pdb_id))
+
+        out_cols = [range(1,len(chain.seq_res)+1), chain.seqres_str] 
+        out_cols.append([
+            chain[x[1]].id if x[1] is not None else "-" for x in chain.seq_res
+        ])
+        if struct.is_xray():
+            out_cols.append([1 if x[1] is None else 0 for x in chain.seq_res])
+            from_atom(chain.monomers, "occupancy", avg)
+            out_cols.append(['NA' if x[1] is None else chain[x[1]].occupancy for x in chain.seq_res])
+            from_atom(chain.monomers, "bfactor", avg)
+            out_cols.append(['NA' if x[1] is None else chain[x[1]].bfactor for x in chain.seq_res])
+        if struct.is_nmr() and len(struct) > 2:
+            out_cols.append(["{0:0.3f}".format(x.rmsd) for x in chain])
+        out_cols.extend(chain.preds)
+
+        #check
+        lens = map(len, out_cols)
+        if not (lens[0] == max(lens) == min(lens)):
+            print(lens)
+            raise RuntimeError("Internal error")
+
+        for i, col in enumerate(zip(*out_cols)):
+            outfh.write("\t".join(map(str,col))+"\n")
+
+
+mirror = "/var/data/pdb"
+
+argparse = ArgParse("Calculate disorder for seqres sequences", mirror_default_path=mirror)
+argparse.struct_arg()
+argparse.report_chain_arg()
+argparse.outfile_arg()
+argparse.add_argument('--chimera', action='store_true', help='output chimera attribute file, one predictor only')
+
+# register predictors
+predictors = dict()
+def map_wrap(func):
+    return lambda seq: map(float, func)
+try:
+    import pyRunpondr
+    for pred in ['vlxt', 'vl3', 'vsl2b']:
+        predictors[pred] = lambda seq, pred=pred: pyRunpondr.runpondr([pred], seq)[pred]
+except:
+    pass
+
+try:
+    import pyIUPRED
+    predictors['iupred_s'] = lambda seq: pyIUPRED.predict_IUPRED_short(seq)['score']
+    predictors['iupred_l'] = lambda seq: pyIUPRED.predict_IUPRED_long(seq)['score']
+except:
+    pass
+
+try:
+    import pyDisopred
+    predictors['disopred'] = lambda seq: pyDisopred.disopred3(seq)[0]
+except:
+    pass
+
+try:
+    import pyPondrFit
+    predictors['fit'] = pyPondrFit.runpondrfit
+except:
+    pass
+
+for pred in predictors.keys():
+    argparse.add_argument("--"+pred, action='append_const', dest='runpreds', const=pred, help="Run "+ pred)
+#runpondr
+
+
+args = argparse()
+
+if not args.runpreds:
+    argparse.error("no predictors selected")
+
+if args.chimera and len(args.runpreds)>1:
+    argparse.error("More than one perdictor selected for chimera output")
+
+outfh = args.outfile
+
+struct = args.struct
+chains = args.chain
+
+remove = []
+for chain in chains:
+    chain.seqres_str = "".join(convert_seq_three_to_one_extended(map(itemgetter(0), chain.seq_res)))
+    if len(chain.seqres_str) < 29:
+        sys.stderr.write("Chain {0} is too short for prediction (<29 residues)\n".format(chain.pdb_id))
+        remove.append(chain)
+        continue
+    chain.prednames = []
+    chain.preds = []
+    if args.runpreds:
+        chain.prednames.extend(args.runpreds)
+        chain.preds.extend([
+            map(
+                lambda y: "{0:0.3f}".format(float(y)), 
+                predictors[x](chain.seqres_str)
+            ) for x in args.runpreds
+        ])
+
+for r in remove:
+    chains.remove(r)
+
+if not chains:
+    sys.stderr.write("No protein chains found\n")
+    sys.exit(1)
+
+if struct.is_nmr() and len(struct) > 2:
+    nmr_struct_pos_rmsd(struct)
+
+if args.chimera:
+    pred = args.runpreds[0]
+    for c in chains:
+        for i, val in zip(map(itemgetter(1),c.seq_res), c.preds[0]):
+            if i is not None:
+                setattr(c[i], pred, val)
+    outfh.write(chimera.residue_attribute([mon for c in chains for mon in c], pred))
+    outfh.write("\n")
+else:
+    writeMulti(outfh, struct, chains)
+
+

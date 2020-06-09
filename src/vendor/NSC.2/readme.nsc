@@ -1,0 +1,406 @@
+
+         W E L L C O M E
+
+              to    N umerical
+                    S urface
+                    C alculation
+
+--------------------------------------------------------------------------
+
+         subroutine NSC
+         version 2.0 (April 1995)
+
+
+         copyright: Frank Eisenhaber
+         present coordinates: 
++------------------------------------------------------------------------+
+| Dr. Frank Eisenhaber                                                   |
+| Biocomputing Unit, European Molecular Biology Laboratory               |
+|                                                                        |
+| Meyerhofstr. 1, PF 10.2209                                             |
+| D-69012 Heidelberg, F.R.Germany                                        |
+|                                                                        |
+| Phone: +49-6223-387-452              FAX: +49-6223-387-517             |
+|                     391 (dept.)                        306 (institute) |
+|                                                                        |
+| E-mail (Internet) : Eisenhaber@EMBL-Heidelberg.DE                      |
++------------------------------------------------------------------------+
+
+
+
+(A) INTRODUCTION
+
+What is NSC ?
+
+NSC == a "numerical recipe" for calculating 
+                    1) surface,
+                    2) volume, and/or
+                    3) surface dots
+for an ensemble of an arbitray number of overlapping spheres defined
+by the coordinates of their centers and their radii. Both the coordi-
+nates and the radii are assumed to be given in the same length unit.
+
+The program NSC is a piece of surface code written in C with an easy
+interface to any user program which requires as one of the tasks the
+calculation of surface, volume or surface dots. The user program simply
+includes "nsc.h" as header file and invokes the subroutine NSC. 
+Subsequently, "nsc.c" is compiled and linked with together with the user
+code.
+
+In many molecular biological tasks, it is not the surface of a molecular
+ensemble per se which is necessary. In most cases, surface and volume 
+data has to be calculated in a special user context. This is just the
+motivation for NSC.
+
+NSC is included directly or in a modified form in
+                    1) Whatif (G.Vriend)
+                    2) DSSP (W.Kabsch and C.Sander)
+                    3) Melc (A.Juffer)
+                    4) STRIDE (A.Frishman)
+
+Hopefully, NSC will fit your needs by easily enabling your program
+to calculate surfaces and volumes. Please contact the author if you 
+have problems and difficulties, but also if you propose useful 
+changes. 
+
+The following text contains the sections (B) Methodical Background,
+(C) Syntax and Usage, (D) Example for Calling NSC, (E) E-mail Hot-Line,
+and (F) License Issues.
+
+
+
+(B) Methodical Background
+
+NSC is an implementation of the DCLM variant of the Shrake's and Rupley's
+algorithm for surface calculation. Please refer to the article
+
+     F.Eisenhaber, P.Lijnzaad, P.Argos, C.Sander, and M.Scharf
+     "The Double Cubic Lattice Method: Efficient Approaches to
+     Numerical Integration of Surface Area and Volume and to Dot
+     Surface Contouring of Molecular Assemblies"
+     Journal of Computational Chemistry (1995) v.16, N3, pp.273-284
+
+for details.  The subroutine NSC makes use of variant 2 described in the 
+reference. By selecting the necessary output via flags, the requirements for
+cpu-time and computer memory can be adapted to the actual needs.
+All files calling NSC should include "nsc.h" !!
+
+About 75% of the source codes the unit sphere triangulation. NSC automati-
+cally adapts to the number of atoms and the required dot density.
+
+
+
+(C) Syntax and Usage
+
+The syntax of calling NSC is :
+
+int NSC(
+  double * ,	/* a atom coordinates xyz0, xyz1, ... */
+  double * ,	/* b atom radii r0, r1, r2, ... */
+  int ,         /* c number of atoms */
+  int ,		/* d number of dots per fully accessible sphere */
+  int ,		/* e flag : dots, volume and/or area per atom */
+  double * ,	/* 1 output: overall area */
+  double ** ,   /* 2 output: pointer to list of areas per atom */
+  double * ,	/* 3 output: overall volume */
+  double ** ,	/* 4 output: pointer to list of surface dots x0, y0, z0, ... */
+  int *		/* 5 output: number of surface dots */
+  );
+
+
+The input requirements :
+Items "a-e" are input data and refer to user-defined sections of memory
+(arrays or single numbers).
+
+Items "a", "b", and "c":
+  The arrays with atom coordinates and radii are thought to start
+  with index 0, i.e., places 0, 1, and 2 are the x-, y-, and z-
+  coordinates of the zero-th atom and place 0 in the other array
+  is its radius.
+
+  PLEASE TAKE INTO ACCOUNT THAT THE RADII GIVEN HERE ARE DIRECTLY
+  USED FOR SURFACE CALCULATION. NSC does not increment with a probe 
+  radius !! 
+
+Item "d":
+  The user can define any number of dots. The program selects a
+  dot density that is the lowest possible with at least the required
+  number of dots. 
+
+  The points are distributed in accordance with the icosahedron-based 
+  or the dodecahedron-based method as described in the reference in 
+  section (B). This selection is the most even triangulation of a unit 
+  sphere known to the author.
+
+
+Item "e":
+  At this place, the user can define the mode of operation. I advise
+  to use the predefined (in "nsc.h") values FLAG_DOTS, FLAG_VOLUME, and
+  FLAG_ATOM_AREA. 
+
+  Example :
+       flag = NULL
+       Only the overall area is calculated. Pointers 2-5 may be set equal
+       to NULL.
+
+       flag = FLAG_VOLUME | FLAG_ATOM_AREA | FLAG_DOTS
+       The routine calculates the area, volume and the dot surface. The
+       program allocates arrays for the atomwise areas and for the surface
+       dots. The addresses are returned in the pointers to pointers to
+       double. 
+       This variant is not recommended because normally the dot surface
+       is needed for low point density (e.g.42) at which area and volume 
+       are inaccurate. The sign "|" is used as binary AND !
+
+       flag = FLAG_VOLUME | FLAG_ATOM_AREA
+       In this case the large arrays for storing the surface dots
+       are not allocated. A large point number of the fully accessible
+       sphere can be selected. Good accuracy is already achieved with
+       600-700 points per sphere (accuracy of about 1.5 square Angstrem
+       per atomic sphere).
+       Output pointers 4 and 5 may be NULL.
+
+       flag = FLAG_DOTS
+       Only the dot surface is produced in addition to the overall area.
+       Output pointers 2 and 3 may be NULL.
+  
+  The output pointer 1 cannot be set to NULL in any circumstances. The
+  overall area value is returned in every mode.
+
+The output requirements are :
+Items
+  1 and 3 :  pointer to an existing double
+  2 and 4 :  pointer to an existing pointer to double
+             NSC allocates memory for an array
+  5       :  pointer to an existing integer
+
+
+
+(D) Example for Calling NSC (contents of the user source file): 
+
+  ...
+#include "nsc.h"
+
+int routine_calling_NSC(int n_atom, double *coordinates, double *radii) {
+  double area, volume, *atomwise_area, *surface_dots;
+  int    i, density = 300, n_dots;
+
+  ...
+
+  for (i=0; i<n_atom; i++) {
+   radii[i]  += 1.4      /* add the probe radius if necessary */
+
+  if (NSC(coordinates, radii, n_atom, density,
+          FLAG_AREA | FLAG_VOLUME | FLAG_DOTS,
+          &area, &atomwise_area, &volume, &surface_dots, &n_dots))
+    printf("error occured\n");
+    return 1;
+    }
+
+  ...
+
+/* do something with areas, volume and surface dots */
+
+  ...
+
+  return 0;
+  }
+
+
+
+(E) E-mail Hot-Line
+
+The users are asked to give feedback by E-mail (on internet 
+Eisenhaber@EMBL-Heidelberg.de) on any problem or failure encountered
+with NSC. I will try to answer as soon as possible.
+
+Also, I might cooperate to introduce special modifications of the source
+code to make NSC fullfilling special user requirements.
+
+
+
+(F) License Issues
+
+For academic usage (usage in the research group of the user only strictly
+in the framework of academic - non-cmmercial research and non-redistribu-
+tion of the source code also in modified form), a free license is granted.
+The full conditions follow below.
+
+If an academic author wants to redistribute his software with NSC included, 
+he is asked to apply for a special written agreement. This agreement takes 
+into account the conditions under which author transfers his software.
+
+Commercial users are asked to sign a special user contract. The license
+for NSC is granted in context with the license for ASC. The main
+conditions are the demand of non-redistribution and the payment of a sym-
+bolic fee. If a commercial user wants to redistribute his own software, he
+is advised to asked for a special written agreement with the author of NSC.
+
+Please contact the author if any of the conditions in the license agree-
+ments does not suit your special working conditions.
+
+--------------------------------------------------------------------------
+
+Text of the academic user license
+
+/*
+ *  Copyright Notice:
+ *  All rights reserved, whether the whole or part of the program is
+ *  concerned. The software may not be used without specific, prior 
+ *  written permission of the author. 
+ *
+ *  An academic licence agreement for the package ASC/GM or its parts
+ *  is granted if you make the following commitments:
+ *  1) In using this software, the user will respect the interests of 
+ *     the author.
+ *  2) The use of the software in commercial activities is not allowed 
+ *     without a prior written commercial licence agreement.
+ *  3) Other interested research groups will be redirected
+ *     to the author. The user will not redistribute the code outside
+ *     his immediate research group.
+ *  4) The copyright messages will not be modified or suppressed.
+ *  5) The reference given below will be cited in any publication
+ *     of scientific results based in part or completely on use of the
+ *     program.
+ *  6) Bugs will be reported to the author.
+ *
+ *  Permission to use, copy, and modify this software and
+ *  its documentation is hereby granted without fee for 
+ *  academic use, provided
+ *  that the above copyright notices and this permission notice appear in
+ *  all copies of the software and related documentation.
+ *
+ *  THE SOFTWARE IS PROVIDED "AS-IS" AND WITHOUT WARRANTY OF
+ *  ANY KIND,
+ *  EXPRESS, IMPLIED OR OTHERWISE, INCLUDING WITHOUT LIMITATION, ANY
+ *  WARRANTY OF MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE.
+ *
+ *  IN NO EVENT SHALL THE AUTHOR BE LIABLE FOR
+ *  ANY SPECIAL, INCIDENTAL, INDIRECT OR CONSEQUENTIAL DAMAGES OF ANY KIND,
+ *  OR ANY DAMAGES WHATSOEVER RESULTING FROM LOSS OF USE, DATA OR PROFITS,
+ *  WHETHER OR NOT ADVISED OF THE POSSIBILITY OF DAMAGE, AND ON ANY THEORY OF
+ *  LIABILITY, ARISING OUT OF OR IN CONNECTION WITH THE USE OR PERFORMANCE
+ *  OF THIS SOFTWARE.
+ *
+ *
+ *  contact address :    European Molecular Biology Laboratory
+ *                       Biocomputing Unit
+ *                       Meyerhofstr. 1
+ *                       Postfach 10.2209
+ *                       D-69012 Heidelberg
+ *                       Federal Republic of Germany
+ *
+ *
+ *
+ *  E-mail : IN%"EISENHABER@EMBL-Heidelberg.DE"
+ *  Please send your contact address to get information on updates and
+ *  new features. Questions will be answered as soon as possible.
+ *
+ *
+ *  references :
+ *  1.F.Eisenhaber, P.Lijnzaad, P.Argos, C.Sander, and M.Scharf
+ *    "The Double Cubic Lattice Method: Efficient Approaches to
+ *    Numerical Integration of Surface Area and Volume and to Dot
+ *    Surface Contouring of Molecular Assemblies"
+ *    Journal of Computational Chemistry (1995) v.16, N3, pp.273-284
+ *  2.F.Eisenhaber and P.Argos
+ *    "Improved Strategy in Analytic Surface Calculation for Molecular
+ *    Systems: Handling of Singularities and Computational Efficiency"
+ *    Journal of Computational Chemistry (1993) v.14, N11, pp.1272-1280
+ *
+ */
+
+--------------------------------------------------------------------------
+
+
+Text of the commercial user license
+
+
+----------------------------- Cut here ---------------------------------------
+
+
+
+--------------------------------------------------------------------------
+
+                             USER CONTRACT
+
+                                  of
+
+                         programs "ASC" and "NSC"
+
+--------------------------------------------------------------------------
+
+
+Between
+(company)
+(called "    ")
+
+
+
+and
+
+Dr. Frank Eisenhaber, European Molecular Biology Laboratory
+Meyerhofstr. 1, Postfach 10.2209, D-69012 Heidelberg
+
+(called the "author") it was agreed
+
+
+
+I)
+"      " having shown their interest for the programs "ASC" and "NSC"
+developed by Dr. Frank Eisenhaber. "      " are willing to sign the 
+present agreement with the author under the following terms and con-
+ditions.
+
+II)
+1. "      " is entitled to use "ASC" as it is but shall not bring
+any amendment without the prior written agreement of the author.
+
+2. "      " is entitled to use "NSC" as numerical recipe (subroutine) 
+in his own software developements.
+
+3. "      " will use "ASC" and "NSC" as basic working tool exclusively 
+for their own purposes and developments but shall not distribute to 
+anyone the programs or any part of them in any form, nor any extension 
+or correction without prior written agreement of the author.
+
+4. "      " shall not disclose to any third party any clue of the pro-
+grams or their contents or composition nor make the program available
+to third parties, without prior written permission of the author.
+
+5. "      " thereby recognize that "ASC" and "NSC" is and shall be and
+remain the exclusive property of teh author. 
+
+6. "      " commit themselves to properly mention the programs "ASC" and
+"NSC" and its author in any article or accasion referring to results 
+derived from its use.
+
+III)
+The author agrees to deliver to "       " a copy of the program and to
+provide E-mail based hotline. This offer is subject to payment of a 
+symbolic amount of US$ 300 or DM 400 (preferably paid via cheque to
+the author).
+
+IV)
+This agreement is non-exclusive and includes no definite time-limit for the
+use of the program. It does not imply to any extent whatsoever any grant of
+licence, patent or any kind of intelectual property.
+
+V)
+The agreement is deemed to be carried out in Heidelberg. All disputes, if
+any, will attempted to be settled amicably.
+
+
+
+
+Heidelberg, 
+
+
+
+
+
+
+       Company                           Signature
+
+
+----------------------------- Cut here ---------------------------------------

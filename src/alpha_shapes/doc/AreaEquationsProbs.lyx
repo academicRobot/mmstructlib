@@ -1,0 +1,343 @@
+#LyX 2.0 created this file. For more info see http://www.lyx.org/
+\lyxformat 413
+\begin_document
+\begin_header
+\textclass article
+\use_default_options true
+\maintain_unincluded_children false
+\language english
+\language_package default
+\inputencoding auto
+\fontencoding global
+\font_roman default
+\font_sans default
+\font_typewriter default
+\font_default_family default
+\use_non_tex_fonts false
+\font_sc false
+\font_osf false
+\font_sf_scale 100
+\font_tt_scale 100
+
+\graphics default
+\default_output_format default
+\output_sync 0
+\bibtex_command default
+\index_command default
+\paperfontsize default
+\use_hyperref false
+\papersize default
+\use_geometry false
+\use_amsmath 1
+\use_esint 1
+\use_mhchem 1
+\use_mathdots 1
+\cite_engine basic
+\use_bibtopic false
+\use_indices false
+\paperorientation portrait
+\suppress_date false
+\use_refstyle 1
+\index Index
+\shortcut idx
+\color #008000
+\end_index
+\secnumdepth 3
+\tocdepth 3
+\paragraph_separation indent
+\paragraph_indentation default
+\quotes_language english
+\papercolumns 1
+\papersides 1
+\paperpagestyle default
+\tracking_changes false
+\output_changes false
+\html_math_output 0
+\html_css_as_file 0
+\html_be_strict false
+\end_header
+
+\begin_body
+
+\begin_layout Standard
+Edges
+\end_layout
+
+\begin_layout Standard
+\begin_inset Formula 
+\begin{eqnarray*}
+A_{i} & = & 4\pi r^{2}\\
+A_{i;j} & = & 2\pi r_{i}h_{i;j}\\
+\frac{A_{i;j}}{\pi} & = & 2r_{i}h_{i;j}
+\end{eqnarray*}
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+Facets
+\end_layout
+
+\begin_layout Standard
+\begin_inset Formula 
+\begin{eqnarray*}
+A_{i;jk} & = & 2r_{i}h_{i;j}\theta_{ij;k}+2r_{i}h_{i;k}\theta_{ik;j}-2r_{i}^{2}\left(\theta_{ij;k}+\theta_{ik;j}+\psi_{i}-\pi\right)\\
+ & = & \frac{A_{i;j}}{\pi}\theta_{ij;k}+\frac{A_{i;k}}{\pi}\theta_{ik;j}-2r_{i}^{2}\left(\theta_{ij;k}+\theta_{ik;j}+\psi_{i}-\pi\right)
+\end{eqnarray*}
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+Area angles
+\end_layout
+
+\begin_layout Standard
+\begin_inset Formula 
+\begin{eqnarray*}
+\gamma_{i} & = & 1-\sum_{jkl|\tau_{ijkl}\in K}\frac{\Omega_{i|\tau_{ijkl}}}{4\pi}=\frac{1}{4\pi}\left(4\pi-\sum_{jkl|\tau_{ijkl}\in K}\Omega_{i|\tau_{ijkl}}\right)\\
+\gamma_{ij} & = & 1-\sum_{kl|\tau_{ijkl}\in K}\frac{\phi_{ij|\tau_{ijkl}}}{2\pi}=\frac{1}{2\pi}\left(2\pi-\sum_{kl|\tau_{ijkl}\in K}\phi_{ij|\tau_{ijkl}}\right)\\
+\gamma_{ijk} & = & 1-\sum_{l|\tau_{ijkl}\in K}\frac{1}{2}
+\end{eqnarray*}
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+Area
+\end_layout
+
+\begin_layout Standard
+\begin_inset Formula 
+\begin{eqnarray*}
+\alpha_{i} & = & \gamma_{i}A_{i}-\sum_{\tau_{ij}\in K}\gamma_{ij}A_{i;j}+\sum_{\tau_{ijk}\in K}\gamma_{ijk}A_{i;jk}\\
+ & = & \left(4\pi-\sum_{jkl|\tau_{ijkl}\in K}\Omega_{i}\right)r_{i}^{2}-\sum_{j|\tau_{ij}\in K}\frac{1}{2}\left(2\pi-\sum_{kl|\tau_{ijkl}\in K}\phi_{ij\mathbf{}}\right)2r_{i}h_{i;j}+\sum_{jk|\tau_{ijk}\in K}\left(1-\sum_{l|\tau_{ijkl}\in K}\frac{1}{2}\right)A_{i;jk}
+\end{eqnarray*}
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+Weighted area
+\end_layout
+
+\begin_layout Standard
+\begin_inset Formula 
+\begin{eqnarray*}
+\alpha_{i}^{(w)} & = & \sum_{m}w_{m}\left[\delta_{\tau_{i}}^{\left(m\right)}\gamma_{i}^{\left(m\right)}A_{i}-\sum_{\tau_{ij}\in K}\delta_{\tau_{ij}}^{\left(m\right)}\gamma_{ij}^{\left(m\right)}A_{i;j}+\sum_{\tau_{ijk}\in K}\delta_{\tau_{ijk}}^{\left(m\right)}\gamma_{ijk}^{\left(m\right)}A_{i;jk}\right]\\
+ & = & \sum_{m}\sum_{\tau_{i}\in K}w_{m}\delta_{\tau_{i}}^{\left(m\right)}\gamma_{i}^{\left(m\right)}A_{i}-\sum_{m}\sum_{\tau_{ij}\in K}w_{m}\delta_{\tau_{ij}}^{\left(m\right)}\gamma_{ij}^{\left(m\right)}A_{i;j}+\sum_{m}\sum_{\tau_{ijk}\in K}w_{m}\delta_{\tau_{ijk}}^{\left(m\right)}\gamma_{ijk}^{\left(m\right)}A_{i;jk}\\
+ & = & \sum_{\tau_{i}\in K}A_{i}\sum_{m}w_{m}\delta_{\tau_{i}}^{\left(m\right)}\gamma_{i}^{\left(m\right)}-\sum_{\tau_{ij}\in K}A_{i;j}\sum_{m}w_{m}\delta_{\tau_{ij}}^{\left(m\right)}\gamma_{ij}^{\left(m\right)}+\sum_{\tau_{ijk}\in K}A_{i;jk}\sum_{m}w_{m}\delta_{\tau_{ijk}}^{\left(m\right)}\gamma_{ijk}^{\left(m\right)}
+\end{eqnarray*}
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+Area angles
+\end_layout
+
+\begin_layout Standard
+\begin_inset Formula 
+\begin{eqnarray*}
+\gamma_{i}^{\left(m\right)} & = & 1-\sum_{jkl|\tau_{ijkl}\in K}\delta_{\tau_{ijkl}}^{\left(m\right)}\frac{\Omega_{i|\tau_{ijkl}}}{4\pi}=\frac{1}{4\pi}\left(4\pi-\sum_{jkl|\tau_{ijkl}\in K}\delta_{\tau_{ijkl}}^{\left(m\right)}\Omega_{i|\tau_{ijkl}}\right)\\
+\gamma_{ij}^{\left(m\right)} & = & 1-\sum_{kl|\tau_{ijkl}\in K}\delta_{\tau_{ijkl}}^{\left(m\right)}\frac{\phi_{ij|\tau_{ijkl}}}{2\pi}=\frac{1}{2\pi}\left(2\pi-\sum_{kl|\tau_{ijkl}\in K}\delta_{\tau_{ijkl}}^{\left(m\right)}\phi_{ij|\tau_{ijkl}}\right)\\
+\gamma_{ijk}^{\left(m\right)} & = & 1-\frac{1}{2}\sum_{l|\tau_{ijkl}\in K}\delta_{\tau_{ijkl}}^{\left(m\right)}
+\end{eqnarray*}
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+where 
+\begin_inset Formula $\delta_{f}^{\left(m\right)}$
+\end_inset
+
+is an indicator variable: 
+\begin_inset Formula $\delta_{f}^{\left(m\right)}=1$
+\end_inset
+
+ when facet 
+\begin_inset Formula $f$
+\end_inset
+
+ is in model 
+\begin_inset Formula $m$
+\end_inset
+
+, and 
+\begin_inset Formula $\delta_{f}^{\left(m\right)}=0$
+\end_inset
+
+ when facet 
+\begin_inset Formula $f$
+\end_inset
+
+ is in not in model 
+\begin_inset Formula $m$
+\end_inset
+
+.
+\end_layout
+
+\begin_layout Standard
+Factoring in 
+\begin_inset Formula $w_{m}$
+\end_inset
+
+ (note that 
+\begin_inset Formula $\sum_{m}w_{m}=1$
+\end_inset
+
+ ):
+\end_layout
+
+\begin_layout Standard
+\begin_inset Formula 
+\begin{eqnarray*}
+\sum_{m}w_{m}\delta_{\tau_{i}}^{\left(m\right)}\gamma_{i}^{\left(m\right)} & = & \sum_{m}w_{m}\delta_{\tau_{i}}^{\left(m\right)}\left(1-\sum_{jkl|\tau_{ijkl}\in K}\delta_{\tau_{ijkl}}^{\left(m\right)}\frac{\Omega_{i|\tau_{ijkl}}}{4\pi}\right)\\
+ & = & \sum_{m}w_{m}\delta_{\tau_{i}}^{\left(m\right)}-\sum_{m}w_{m}\delta_{\tau_{i}}^{\left(m\right)}\sum_{jkl|\tau_{ijkl}\in K}\delta_{\tau_{ijkl}}^{\left(m\right)}\frac{\Omega_{i|\tau_{ijkl}}}{4\pi}\\
+ & = & \sum_{m}w_{m}\delta_{\tau_{i}}^{\left(m\right)}-\sum_{jkl|\tau_{ijkl}\in K}\frac{\Omega_{i|\tau_{ijkl}}}{4\pi}\sum_{m}w_{m}\delta_{\tau_{i}}^{\left(m\right)}\delta_{\tau_{ijkl}}^{\left(m\right)}\\
+ & = & 1-\sum_{jkl|\tau_{ijkl}\in K}\frac{\Omega_{i|\tau_{ijkl}}}{4\pi}\sum_{m}w_{m}\delta_{\tau_{ijkl}}^{\left(m\right)}\\
+\sum_{m}w_{m}\delta_{\tau_{ij}}^{\left(m\right)}\gamma_{ij}^{\left(m\right)} & = & \sum_{m}w_{m}\delta_{\tau_{ij}}^{\left(m\right)}\left(1-\sum_{kl|\tau_{ijkl}\in K}\delta_{\tau_{ijkl}}^{\left(m\right)}\frac{\phi_{ij|\tau_{ijkl}}}{2\pi}\right)\\
+ & = & \sum_{m}w_{m}\delta_{\tau_{ij}}^{\left(m\right)}-\sum_{m}w_{m}\delta_{\tau_{ij}}^{\left(m\right)}\sum_{kl|\tau_{ijkl}\in K}\delta_{\tau_{ijkl}}^{\left(m\right)}\frac{\phi_{ij|\tau_{ijkl}}}{2\pi}\\
+ & = & \sum_{m}w_{m}\delta_{\tau_{ij}}^{\left(m\right)}-\sum_{kl|\tau_{ijkl}\in K}\frac{\phi_{ij|\tau_{ijkl}}}{2\pi}\sum_{m}w_{m}\delta_{\tau_{ij}}^{\left(m\right)}\delta_{\tau_{ijkl}}^{\left(m\right)}\\
+ & = & \sum_{m}w_{m}\delta_{\tau_{ij}}^{\left(m\right)}-\sum_{kl|\tau_{ijkl}\in K}\frac{\phi_{ij|\tau_{ijkl}}}{2\pi}\sum_{m}w_{m}\delta_{\tau_{ijkl}}^{\left(m\right)}\\
+\sum_{m}w_{m}\delta_{\tau_{ijk}}^{\left(m\right)}\gamma_{ijk}^{\left(m\right)} & = & \sum_{m}w_{m}\delta_{\tau_{ijk}}^{\left(m\right)}\left(1-\frac{1}{2}\sum_{l|\tau_{ijkl}\in K}\delta_{\tau_{ijkl}}^{\left(m\right)}\right)\\
+ & = & \sum_{m}w_{m}\delta_{\tau_{ijk}}^{\left(m\right)}-\frac{1}{2}\sum_{m}w_{m}\delta_{\tau_{ijk}}^{\left(m\right)}\sum_{l|\tau_{ijkl}\in K}\delta_{\tau_{ijkl}}^{\left(m\right)}\\
+ & = & \sum_{m}w_{m}\delta_{\tau_{ijk}}^{\left(m\right)}-\frac{1}{2}\sum_{l|\tau_{ijkl}\in K}\sum_{m}w_{m}\delta_{\tau_{ijk}}^{\left(m\right)}\delta_{\tau_{ijkl}}^{\left(m\right)}\\
+ & = & \sum_{m}w_{m}\delta_{\tau_{ijk}}^{\left(m\right)}-\frac{1}{2}\sum_{l|\tau_{ijkl}\in K}\sum_{m}w_{m}\delta_{\tau_{ijkl}}^{\left(m\right)}
+\end{eqnarray*}
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+The last line of the first reduction uses the fact that, for our usage,
+ 
+\begin_inset Formula $\delta_{\tau_{i}}^{\left(m\right)}=1$
+\end_inset
+
+ for all models and vertices.
+ The last line of last two reductions uses the fact that 
+\begin_inset Formula $\delta_{f}^{\left(m\right)}\delta_{f+1}^{\left(m\right)}=\delta_{f+1}^{\left(m\right)}$
+\end_inset
+
+; higher level facets are in the model iff lower level facets are in the
+ model.
+ The term 
+\begin_inset Formula $\sum_{m}w_{m}\delta_{f}^{\left(m\right)}$
+\end_inset
+
+ is the sum of weights over models in which facet 
+\begin_inset Formula $f$
+\end_inset
+
+ appears.
+ If weights represent model probabilities, then this term represents the
+ probability of facet 
+\begin_inset Formula $f$
+\end_inset
+
+; 
+\begin_inset Formula $p_{f}=\sum_{m}w_{m}\delta_{f}^{\left(m\right)}$
+\end_inset
+
+.
+ We estimate 
+\begin_inset Formula $p_{\tau_{ij}}$
+\end_inset
+
+, 
+\begin_inset Formula $p_{\tau_{ijk}}$
+\end_inset
+
+, and 
+\begin_inset Formula $p_{\tau_{ijkl}}$
+\end_inset
+
+ in terms of the class probabilities of individual vertices:
+\end_layout
+
+\begin_layout Standard
+\begin_inset Formula 
+\begin{eqnarray*}
+p_{\tau_{ijkl}} & = & \begin{cases}
+1 & local\left(i,j,k,l\right)\\
+p\left(S_{i}=O,S_{j}=O,S_{k}=O,S_{l}=O\right) & !local(i,j,k,l)
+\end{cases}\\
+p\left(S_{i}=O,S_{j}=O,S_{k}=O,S_{l}=O\right) & \approx & \prod_{x=i,j,k,l}p\left(S_{x}=O\right)\\
+ & \approx & \min_{x=i,j,k,l}\left[p\left(S_{x}=O\right)\right]
+\end{eqnarray*}
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+The function 
+\begin_inset Formula $local\left(i,j,k,l\right)$
+\end_inset
+
+ is true if all atoms are within a three residue.
+ Refinement: local for a facet is different with respect to each vertex.
+ If i, j, and k are local to l, l is local even if any of i, j, and k are
+ not local to each other.
+ Todo: change equation below.
+\end_layout
+
+\begin_layout Standard
+\begin_inset Formula $local_{n}\left(i,j,k,l\right)=maxabs\left(R_{i}-R_{j},R_{i}-R_{k},R_{i}-R_{l},R_{j}-R_{k},R_{j}-R_{l},R_{k}-R_{l}\right)\leq n$
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+Combining equations gives an expression for the area of each atom in terms
+ of the alpha complex and tetrahedra probabilities:
+\end_layout
+
+\begin_layout Standard
+\begin_inset Formula 
+\begin{eqnarray*}
+\alpha_{i}^{(p)} & = & \left(4\pi-\sum_{jkl|\tau_{ijkl}\in K}p_{\tau_{ijkl}}\Omega_{i}\right)r_{i}^{2}-\sum_{j|\tau_{ij}\in K}\left(2\pi p_{\tau_{ij}}-\sum_{kl|\tau_{ijkl}\in K}p_{\tau_{ijkl}}\phi_{ij}\right)r_{i}h_{i;j}+\sum_{jk|\tau_{ijk}\in K}\left(p_{\tau_{ijk}}-\frac{1}{2}\sum_{l|\tau_{ijkl}\in K}p_{\tau_{ijkl}}\right)A_{i;jk}
+\end{eqnarray*}
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+Note on errors.
+ Consider the case where all probabilities are zero and window size is less
+ than the length of the chain.
+ This case corresponds to windowed surface areas, where the surface area
+ of a residue is calculated considering only local residues, which can be
+ calculated exactly by repeated surface area calculation for isolated sequence
+ segments.
+ The above calculation will not give exact results and errors will be both
+ positive and negative.
+ Positive errors (surface area calculation too large) result from intersections
+ that are occluded in the full alpha complex and the occluding atom is not
+ local.
+ Negative errors result from occluded facets due to not correcting for overlaps.
+\end_layout
+
+\end_body
+\end_document

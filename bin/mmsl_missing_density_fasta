@@ -1,0 +1,35 @@
+#!/usr/bin/env python3
+
+from mmstructlib.cli import ArgParse
+from mmstructlib.tools.seq import convert_seq_three_to_one_extended
+
+import os
+
+mirror = os.environ.get('PDB_MIRROR_DIR', "/var/data/pdb")
+
+argparse = ArgParse("Fetch fasta seqres for chain with missing density encoded by lowercase characters", mirror_default_path=mirror)
+argparse.struct_arg()
+argparse.report_chain_arg()
+argparse.outfile_arg()
+
+args = argparse()
+
+outfh = args.outfile
+
+struct = args.struct
+chains = args.chain
+
+if not struct.is_xray():
+    exit("{} is not an xray structure".format(struct.id))
+
+if not chains:
+    exit("No chains found for {}".format(struct.id))
+
+for chain in chains:
+    outseq = "".join([
+        list(convert_seq_three_to_one_extended([x[0]]))[0].upper()
+        if x[1] is not None  # has residue record attached
+        else list(convert_seq_three_to_one_extended([x[0]]))[0].lower()
+        for x in chain.seq_res
+    ])
+    outfh.write(">{}_{}\n{}\n".format(struct.id, chain.pdb_id, outseq))

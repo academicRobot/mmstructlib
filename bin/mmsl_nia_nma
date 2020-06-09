@@ -1,0 +1,123 @@
+#!/usr/bin/env python
+
+from __future__ import print_function
+from operator import attrgetter
+import math
+
+from mmstructlib.cli import ArgParse
+#from mmstructlib.IO import load_cif_from_mirror, load_cif_from_file
+#from mmstructlib.tools.preprocess import strip_water, strip_hydrogen
+from mmstructlib.radii import add_radii
+from mmstructlib.sas.nsc import area_atoms
+from mmstructlib.tools.summarize import from_atom
+
+def boundary_distance(nma, nia):
+    # Oldfield et al (2008):
+    #    nma = 157.43 - 3.51 * nia
+    #    0 = -1 * nma - 3.51 * nia + 157.43
+    #a, b, c = -1.0, -3.51, 157.43
+    a, b, c = 1.0, 3.51, -157.43
+    return (a*nma + b*nia + c) / math.sqrt(a**2 + b**2)
+
+mirror = "/var/data/pdb"
+
+def chain_label(chain):
+    label = chain.pdb_id
+    if not chain.is_protein():
+        if chain.is_nucleic_acid():
+            label += '_nuc'
+        else:
+            label += '_het'
+    return label
+
+argparse = ArgParse(
+    "Calculate normalized interface area-normalized monomer area",
+    mirror_default_path=mirror
+)
+
+argparse.struct_arg(strip_water=True, strip_hydrogen=True)
+argparse.report_chain_arg('-t', '--target', required=True, protein_only=False)
+#argparse.report_chain_arg('-t', '--target', nargs='+', required=True)
+argparse.report_chain_arg('-p', '--partner', protein_only=False)
+argparse.add_argument('-b', '--boundary', action='store_true', help="Calculate boundary distances instead")
+
+het_args = argparse.parser.add_mutually_exclusive_group()
+het_args.add_argument('-s', '--hetero', dest='het', action='store_true', help="Include hetero groups with same id as protein chain")
+het_args.add_argument('-o', '--phetero', dest='het', action='store_false', help="Include all hetero groups with partner")
+argparse.parser.set_defaults(het=None)
+args = argparse()
+
+struct = args.struct
+tchains = args.target
+pchains = args.partner
+
+pchains = [c for c in pchains if c not in tchains]
+
+#handle hetero groups
+if args.het is None:
+    tchains = [c for c in tchains if c.is_protein() or c.is_nucleic_acid()]
+    pchains =  [c for c in pchains if c.is_protein() or c.is_nucleic_acid()]
+elif not args.het:
+    pchains.extend([c for c in tchains if not (c.is_protein() or c.is_nucleic_acid())])
+    tchains = [c for c in tchains if c.is_protein() or c.is_nucleic_acid()]
+
+#print(tchains, pchains)
+
+#check
+if (not len(tchains)) or (not len(pchains)):
+    import sys
+    report = []
+    if not len(tchains):
+        report.append('no target chains found')
+    if not len(pchains):
+        report.append('no partner chains found')
+    print(", ".join(report))
+    sys.exit(1)
+
+all_chains = tchains + pchains
+
+add_radii(struct[0])
+
+def get_atoms(lst): return [a for i in lst for a in i.atoms]
+for a in get_atoms(pchains):
+    if not hasattr(a, 'radius'):
+        print(a.entity, a.monomer)
+area_atoms(get_atoms(tchains), out_attr="tarea")
+area_atoms(get_atoms(pchains), out_attr="parea")
+area_atoms(get_atoms(all_chains), out_attr="aarea")
+
+from_atom(tchains, 'tarea')
+from_atom(pchains, 'parea')
+from_atom(all_chains, 'aarea')
+
+def sum_attr_lst(lst, attr): return sum(map(attrgetter(attr), lst))
+tarea = sum_attr_lst(tchains, 'tarea')
+parea = sum_attr_lst(pchains, 'parea')
+aarea = sum_attr_lst(all_chains, 'aarea')
+iarea = tarea + parea - aarea
+
+tlength = sum(map(len,tchains))
+plength = sum(map(len,pchains))
+
+tlabels = ','.join([chain_label(c)  for c in tchains])
+plabels = ','.join([chain_label(c)  for c in pchains])
+
+tnma = tarea / tlength
+tnia = iarea / tlength
+pnma = parea / plength
+pnia = iarea / plength
+if args.boundary:
+    fmt = "{0}\t{1:.2f}\t{2:.2f}\t{3:.2f}\t{4}\t{5:.2f}\t{6:.2f}\t{7:.2f}"
+else:
+    fmt = "{0}\t{1:.2f}\t{2:.2f}\t{4}\t{5:.2f}\t{6:.2f}"
+print(fmt.format(
+    tlabels,
+    tnma,
+    tnia,
+    boundary_distance(tnma, tnia),
+    plabels,
+    pnma,
+    pnia,
+    boundary_distance(pnma, pnia)
+))
+

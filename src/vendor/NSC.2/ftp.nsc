@@ -1,0 +1,138 @@
+Heidelberg, April 19th, 1995
+
+Dear collegue,
+
+Thank you very much for your interest in the papers
+
+"The Double Cubic Lattice Method: Efficient Approaches to Numerical
+Integration of Surface Area and Volume and for Generating Dot Surfaces
+of Molecular Assemblies"
+published in Journal of Computational Chemistry, v. 16, N3,
+(1995), pp.273-284 by Frank Eisenhaber, Philip Lijnzaad, Patrick Argos,
+Chris Sander, and Michael Scharf 
+
+and the associated program NSC (version 2.0). 
+
+The program NSC can be obtained by academic users free of charge
+if they agree with an academic license agreement (of non-redistribution).
+Commercial users are asked to pay a symbolic fee
+(please sign a commercial user agreement). The text of the license
+agreements is contained in "readme.nsc".
+
+The program text in standard C for UNIX systems can be obtained from the
+author in the following way:
+(1) ftp phenix.EMBL-Heidelberg.DE;
+(2) login: anonymous, during login give your E-mail address as password;
+(3) change to the directory pub/NSC.2;
+(4) move all files of this directory to your site
+(5) execute 
+      uncompress nsc2.tar.Z
+      tar -xvf nsc2.tar
+      cd NSC.2
+(5) read "readme.nsc" for further information
+
+Please, contact me by E-mail, if you have suggestions, problems
+or questions. Please ask, if you do not find nsc2.tar.Z at the ftp-site.
+In this case, I will renew the file.
+
+The program has an interesting numerical surface calculation
+algorithm which is one of the
+fastest techniques known to me on UNIX work stations by using a single
+processor.
+
+Sincerely,
+
+
+Frank Eisenhaber
+
++------------------------------------------------------------------------+
+| Dr. Frank Eisenhaber                                                   |
+| Biocomputing Unit, European Molecular Biology Laboratory               |
+|                                                                        |
+| Meyerhofstr. 1, PF 10.2209                                             |
+| D-69012 Heidelberg, F.R.Germany                                        |
+|                                                                        |
+| Phone: +49-6223-387-452              FAX: +49-6223-387-517             |
+|                     391 (dept.)                        306 (institute) |
+|                                                                        |
+| E-mail (Internet) : Eisenhaber@EMBL-Heidelberg.DE                      |
++------------------------------------------------------------------------+
+
+
+/*  Academic License Agreement
+ *  (of non-redistribution)
+ *
+ *  program NSC
+ *  version 2.0  (April 1995)
+ *
+ *  Author: Frank Eisenhaber
+ *
+ *  Copyright Notice:
+ *  All rights reserved, whether the whole or part of the program is
+ *  concerned. The software may not be used without specific, prior 
+ *  written permission of the author. 
+ *
+ *  An academic licence agreement for the package ASC/GM or its parts
+ *  is granted if you make the following commitments:
+ *  1) In using this software, the user will respect the interests of 
+ *     the author.
+ *  2) The use of the software in commercial activities is not allowed 
+ *     without a prior written commercial licence agreement. The program
+ *     will not be used in classified research.
+ *  3) Other interested research groups will be redirected
+ *     to the author. The user will not redistribute the code outside
+ *     his immediate research group.
+ *  4) The copyright messages will not be modified or suppressed.
+ *  5) The reference given below will be cited in any publication
+ *     of scientific results based in part or completely on use of the
+ *     program.
+ *  6) Bugs will be reported to the author.
+ *
+ *  Permission to use, copy, and modify this software and
+ *  its documentation is hereby granted without fee for 
+ *  academic use, provided
+ *  that the above copyright notices and this permission notice appear in
+ *  all copies of the software and related documentation.
+ *
+ *  THE SOFTWARE IS PROVIDED "AS-IS" AND WITHOUT WARRANTY OF
+ *  ANY KIND,
+ *  EXPRESS, IMPLIED OR OTHERWISE, INCLUDING WITHOUT LIMITATION, ANY
+ *  WARRANTY OF MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE.
+ *
+ *  IN NO EVENT SHALL THE AUTHOR BE LIABLE FOR
+ *  ANY SPECIAL, INCIDENTAL, INDIRECT OR CONSEQUENTIAL DAMAGES OF ANY KIND,
+ *  OR ANY DAMAGES WHATSOEVER RESULTING FROM LOSS OF USE, DATA OR PROFITS,
+ *  WHETHER OR NOT ADVISED OF THE POSSIBILITY OF DAMAGE, AND ON ANY THEORY OF
+ *  LIABILITY, ARISING OUT OF OR IN CONNECTION WITH THE USE OR PERFORMANCE
+ *  OF THIS SOFTWARE.
+ *
+ *
+ *  contact address :    European Molecular Biology Laboratory
+ *                       Biocomputing Unit
+ *                       Meyerhofstr. 1
+ *                       Postfach 10.2209
+ *                       D-69012 Heidelberg
+ *                       Federal Republic of Germany
+ *
+ *
+ *
+ *  E-mail : IN%"EISENHABER@EMBL-Heidelberg.DE"
+ *  Please send your contact address to get information on updates and
+ *  new features. Questions will be answered as soon as possible.
+ *
+ *
+ *  Please read file "manual.int" as introduction and use "manual.lib"
+ *  as reference material.
+ *
+ *  references :
+ *  1 F.Eisenhaber, P.Argos
+ *    "Improved Strategy in Analytic Surface Calculation for Molecular
+ *    Systems: Handling of Singularities and Computational Efficiency"
+ *    Journal of Computational Chemistry (1993) v.14, N11, pp.1272-1280
+ *  2.F.Eisenhaber, P.Lijnzaad, P.Argos, M.Scharf
+ *    "The Double Cubic Lattice Method: Efficient Approaches to
+ *    Numerical Integration of Surface Area and Volume and to Dot
+ *    Surface Contouring of Molecular Assemblies"
+ *    Journal of Computational Chemistry (1995) v.16, N3, pp.273-284
+ *
+ */

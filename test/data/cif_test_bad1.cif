@@ -1,0 +1,28 @@
+data_test_data
+
+_single_single.f1   A
+
+_single_multi.f1    B
+_single_multi.f2    C
+_single_multi.f3    
+
+loop_
+_multi_single.f1
+E
+F
+G
+
+loop_
+_multi_multi.f1
+_multi_multi.f2
+_multi_multi.f3
+H 
+I 
+J
+K
+L
+M
+N
+O
+P
+
