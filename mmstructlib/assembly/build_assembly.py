@@ -17,13 +17,12 @@ def build_assembly(struct, assembly):
     ass_struct = copy.copy(struct)
     ass_struct[:] = []
     for op_exp, assyms in assembly.operation_assyms:
-        model = copy.deepcopy(struct.models[0])
-        ass_struct.models.append(model)
-        for molecule in model.molecules:
-            if molecule.id not in assyms:
-                molecule.entity = None
         for op in op_exp:
+            model = copy.deepcopy(struct.models[0])
+            for molecule in model.molecules:
+                if molecule.id not in assyms:
+                    molecule.entity = None
             apply_operation.atoms(model.atoms, op) 
-
+            ass_struct.models.append(model)
     return ass_struct
 
