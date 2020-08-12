@@ -1,0 +1,5 @@
+mmstructlib~=0.1
+numpy~=1.19.1
+scipy~=1.4.1
+setuptools~=45.2.0
+Cython~=0.29.14

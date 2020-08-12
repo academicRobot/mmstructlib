@@ -17,6 +17,7 @@ class WeakBackRef(object):
     def __deepcopy__(self, memo):
         return type(self)(memo.get(id(self._weakref()), None))
     def __reduce__(self):
+        raise NotImplemented("pickling not yet supported")
         return (StrongWeakRef, self._weakref())
     def __call__(self):
         return self._weakref() 
