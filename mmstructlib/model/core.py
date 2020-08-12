@@ -283,6 +283,9 @@ class Entity(Child, Parent):
     def is_polymer(self):
         return self.primary_type == "polymer"
 
+    def is_branch(self):
+        return self.primary_type == "branch"
+
     def is_protein(self):
         return self.secondary_type == "polypeptide(L)"
 
@@ -364,6 +367,9 @@ class Molecule(Child, Parent):
 
     def is_polymer(self):
         return self.entity.is_polymer()
+
+    def is_branch(self):
+        return self.entity.is_branch()
 
     def is_nonpolymer(self):
         return self.entity.is_nonpolymer()

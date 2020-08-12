@@ -294,15 +294,23 @@ def build_entities(tables, model):
 
         model.append(sm.Entity(entity_id, entity_type, entity_type2, entity_name))
 
+
+#pdb updated nonpolys to brake out branched polys, but gave them a different table convention, thanks pdb :/
 def get_pdb_asym_ids(tables):
     ret = dict()
-    table_names = ['pdbx_poly_seq_scheme', 'pdbx_nonpoly_scheme']
-    for table_name in table_names:
-        if table_name in tables:
-            table = tables[table_name]
-            seq_asym_i = table.index('asym_id')
-            pdb_asym_i = table.index('pdb_strand_id')
-            ret.update([(r[seq_asym_i], r[pdb_asym_i]) for r in table.cells])
+    ret.update(get_pdb_asym_ids_table_specific(tables, 'pdbx_poly_seq_scheme', 'asym_id', 'pdb_strand_id'))
+    ret.update(get_pdb_asym_ids_table_specific(tables, 'pdbx_nonpoly_scheme', 'asym_id', 'pdbx_strand_id'))
+    ret.update(get_pdb_asym_ids_table_specific(tables, 'pdbx_branch_scheme', 'asym_id', 'pdb_asym_id'))
+
     return ret
 
+
+def get_pdb_asym_ids_table_specific(tables, table_name, asym_column_name, pdb_asym_column_name):
+    ret = dict()
+    if table_name in tables:
+        table = tables[table_name]
+        seq_asym_i = table.index(asym_column_name)
+        pdb_asym_i = table.index(pdb_asym_column_name)
+        ret.update([(r[seq_asym_i], r[pdb_asym_i]) for r in table.cells])
+    return ret
 
