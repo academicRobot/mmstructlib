@@ -616,7 +616,7 @@ class MultiOccAtom(Child,Parent):
         self.element = element
         self.name = name
 
-        self.alt_locs = []
+        self.alt_locs = [] #location codes
         self.default = 0
 
     def __eq__(self, other):
@@ -686,7 +686,7 @@ class MultiOccAtom(Child,Parent):
 #        return delattr(self.atoms[self.default], name)
 
     def __str__(self):
-        return str(self.atom[self.default])
+        return str(self[self.default])
 
     def __repr__(self):
         return "MultiOccAtom({0},{1})".format(repr(self.atoms), repr(self.alt_locs))
