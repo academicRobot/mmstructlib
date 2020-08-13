@@ -587,6 +587,8 @@ class Atom(Child):
     def __repr__(self):
         return "Atom({0})".format(", ".join(list(map(repr,[self.element, self.monomer, self.name, self.coordinates, self.bfactor, self.occupancy]))))
 
+    def __hash__(self):
+        return id(self)
 
     def is_multi_occ(self):
         """
@@ -622,6 +624,9 @@ class MultiOccAtom(Child,Parent):
         Overrides list equality, only the same object compares as equal
         """
         return id(self) == id(other)
+
+    def __hash__(self):
+        return id(self)
 
     def delete(self):
         """
